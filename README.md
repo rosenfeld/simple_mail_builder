@@ -50,7 +50,9 @@ Or install it yourself as:
     require 'simple_mail_builder'
     message = SimpleMailBuilder::Message.new(
       to: {'Recipient' => 'to@domain.com'},
-      from: 'from@domain.com', subject: 'Message subject',
+      from: 'from@domain.com',
+      reply_to: 'reply-to@domain.com',
+      subject: 'Message subject',
       text: "Header\n\nFirst line\nLast line",
       html: '<h1>Header</h1><p>First line</p><p>Last line</p>'
     ).to_s

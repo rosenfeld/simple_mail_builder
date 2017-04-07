@@ -6,7 +6,8 @@ require 'time'
 describe SimpleMailBuilder do
   it 'generates a valid simple multi-part TEXT + HTML message' do
     message = SimpleMailBuilder::Message.new(to: {'João Ninguém' => 'to@d.com'},
-      from: 'from@d.com', subject: 'Não tem coração', text: "First line\nÚltima linha",
+      from: 'from@d.com', reply_to: 'reply-to@d.com',
+      subject: 'Não tem coração', text: "First line\nÚltima linha",
       html: '<h1>Header</h1><p>First line</p><p>Última linha</p>').to_s
     m = message.split("\r\n")
     date = m.shift
@@ -23,6 +24,7 @@ describe SimpleMailBuilder do
     expected = <<~MESSAGE_END
       From: from@d.com
       To: =?UTF-8?B?Sm/Do28gTmluZ3XDqW0=?= <to@d.com>
+      Reply-to: reply-to@d.com
       Message-ID: <message-id@local.mail>
       Subject: =?UTF-8?Q?N=C3=A3o_tem_cora=C3=A7=C3=A3o?=
       Mime-Version: 1.0

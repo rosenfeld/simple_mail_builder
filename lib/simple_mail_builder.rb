@@ -8,10 +8,10 @@ require_relative 'simple_mail_builder/encoder/base64'
 
 module SimpleMailBuilder
   class Message
-    def initialize(from: , to: , subject: , text: , html: , boundary: '--MESSAGE BOUNDARY--',
-                   date: Time.now, domain: 'local.mail')
-      from, to = [from, to].map do |address|
-        next address if String === address # otherwise we assume it's a Hash
+    def initialize(from:, to:, subject:, text:, html:, reply_to: nil,
+                   boundary: '--MESSAGE BOUNDARY--', date: Time.now, domain: 'local.mail')
+      from, to, reply_to = [from, to, reply_to].map do |address|
+        next address if address.nil? || String === address # otherwise we assume it's a Hash
         address.map do |name, email|
           name == email ? email : "#{Encoder::Base64.encode_or_quote(name)} <#{email}>"
         end.join ", \r\n "
@@ -22,6 +22,7 @@ module SimpleMailBuilder
       message << "Date: #{fdate}"
       message << "From: #{from}"
       message << "To: #{to}"
+      message << "Reply-to: #{reply_to}" if reply_to
       message_id = Digest::MD5.hexdigest [fdate, to, text, html].join
       message << "Message-ID: <#{message_id}@#{domain}>"
       message << "Subject: #{Encoder::Quote.encode_if_required subject}"
