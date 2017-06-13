@@ -14,6 +14,8 @@ module SimpleMailBuilder
         next address if address.nil? || String === address # otherwise we assume it's a Hash
         address.map do |name, email|
           name == email ? email : "#{Encoder::Base64.encode_or_quote(name)} <#{email}>"
+        end.map do |addr|
+          addr.gsub "\r\n", '' # basic protection against SMTP commands injection
         end.join ", \r\n "
       end
       text, html = [text, html].map{|s| [s].pack('M').chomp("=\n").gsub "\n", "\r\n"}

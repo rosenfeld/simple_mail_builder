@@ -51,4 +51,11 @@ describe SimpleMailBuilder do
     MESSAGE_END
     expect(source_to_compare).to eq expected.chomp("\n").gsub("\r", '').gsub("\n", "\r\n")
   end
+
+  it 'has basic protection against SMTP commands injection in e-mail addresses' do
+    message = SimpleMailBuilder::Message.new(to: {"Some\r\nName" => "to\r\n@d.com"},
+      from: 'from@d.com', subject: 'Ignore', text: '', html: '').to_s
+    expect(message).to include 'SomeName'
+    expect(message).to include 'to@d.com'
+  end
 end
